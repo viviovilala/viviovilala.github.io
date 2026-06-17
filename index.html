@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Behind the Cancellation · Kelompok 16 · Data Visualisasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+
+:root{
+  --white:      #FFFFFF;
+  --cream:      #FFF8F3;
+  --sand:       #FFF1E8;
+  --border:     #F3D8C8;
+  --text-1:     #1F1712;
+  --text-2:     #6A564A;
+  --text-3:     #A89286;
+
+  --orange:     #FF6A00;
+  --orange-lt:  #FFF1E6;
+  --orange-deep:#E65A00;
+  --coral:      #F97316;
+  --coral-lt:   #FFF3E8;
+  --amber:      #F59E0B;
+  --amber-lt:   #FFF8E7;
+  --emerald:    #10B981;
+  --emerald-lt: #ECFDF5;
+  --sky:        #0EA5E9;
+  --sky-lt:     #E0F2FE;
+  --indigo:     #EA580C;
+  --indigo-lt:  #FFF0E6;
+  --violet:     #C2410C;
+
+  --grad-hero:  linear-gradient(135deg,#FF6A00 0%,#F97316 42%,#FDBA74 100%);
+  --grad-s:     linear-gradient(120deg,#FF6A00 0%,#F97316 100%);
+  --grad-c:     linear-gradient(120deg,#EA580C 0%,#F59E0B 100%);
+  --grad-r:     linear-gradient(120deg,#F97316 0%,#EA580C 100%);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 100px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.10);
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+body{
+  background:var(--cream);
+  color:var(--text-1);
+  font-family:var(--font-body);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--sand)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#E9BFA2}
+
+#prog{
+  position:fixed;top:0;left:0;
+  height:3px;background:var(--grad-hero);
+  z-index:500;width:0%;transition:width .12s;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(255,248,243,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  padding:0 clamp(1.25rem,5vw,4rem);
+  display:flex;align-items:center;justify-content:space-between;height:58px;
+}
+.nav-logo{
+  font-family:var(--font-display);font-weight:700;font-size:1.05rem;
+  background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.02em;
+}
+.nav-links{display:flex;align-items:center;gap:.25rem;}
+.nav-links a{
+  font-size:.78rem;font-weight:600;color:var(--text-2);text-decoration:none;
+  padding:5px 13px;border-radius:var(--radius-pill);transition:all .18s;letter-spacing:.01em;
+}
+.nav-links a:hover{background:var(--sand);color:var(--text-1);}
+.nav-links a.on{background:var(--orange-lt);color:var(--orange);}
+.nav-btn{
+  font-size:.78rem;font-weight:700;background:var(--grad-hero);color:#fff;
+  text-decoration:none;padding:7px 18px;border-radius:var(--radius-pill);
+  transition:opacity .18s,transform .18s;letter-spacing:.01em;border:none;
+}
+.nav-btn:hover{opacity:.9;transform:translateY(-1px);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-1);}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.25rem,5vw,4rem);}
+section{padding:96px 0;}
+section+section{border-top:1px solid var(--border);}
+
+/* ── EYEBROW ── */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:1.1rem;
+}
+.ey-pill{padding:3px 11px;border-radius:var(--radius-pill);display:inline-flex;align-items:center;gap:6px;}
+.ey-dot{width:6px;height:6px;border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ey-indigo{background:var(--orange-lt);color:var(--orange)}
+.ey-coral{background:var(--coral-lt);color:var(--coral)}
+.ey-emerald{background:var(--emerald-lt);color:var(--emerald)}
+
+/* ── TYPE ── */
+.display{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(2.2rem,6vw,4.8rem);line-height:1.02;letter-spacing:-.03em;
+}
+.display em{font-style:italic;font-weight:300;}
+.h2{
+  font-family:var(--font-display);font-weight:700;
+  font-size:clamp(1.7rem,3.5vw,3rem);line-height:1.08;letter-spacing:-.025em;margin-bottom:.8rem;
+}
+.lead{font-size:1.05rem;color:var(--text-2);line-height:1.7;max-width:580px;}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:110px clamp(1.25rem,5vw,4rem) 80px;position:relative;overflow:hidden;
+}
+.hero-blob-a,.hero-blob-b{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);opacity:.18;
+}
+.hero-blob-a{width:640px;height:640px;background:var(--orange);top:-120px;right:-160px;}
+.hero-blob-b{width:500px;height:500px;background:var(--amber);bottom:-80px;left:-100px;}
+.hero-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto;width:100%;}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:end;margin-bottom:3.5rem;}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-pill);
+  padding:5px 14px;font-size:.72rem;font-weight:700;color:var(--text-2);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.4rem;box-shadow:var(--shadow-sm);
+}
+.hero-kicker span{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 1.8s infinite;}
+.display-hero{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(3rem,7.5vw,6.5rem);line-height:.97;letter-spacing:-.04em;margin-bottom:1.5rem;
+}
+.display-hero .line-color{
+  background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-style:italic;font-weight:300;
+}
+.hero-desc{font-size:1.05rem;color:var(--text-2);max-width:520px;line-height:1.75;}
+
+/* Hook callout di hero */
+.hero-hook{
+  display:inline-block;margin-top:1.5rem;
+  background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-xl);
+  padding:1.1rem 1.6rem;box-shadow:var(--shadow-md);
+}
+.hero-hook-fraction{
+  font-family:var(--font-display);font-size:2.8rem;font-weight:900;line-height:1;
+  background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.04em;
+}
+.hero-hook-text{font-size:.82rem;color:var(--text-2);font-weight:600;margin-top:.2rem;line-height:1.5;}
+
+.hero-big-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:2rem 2.25rem;box-shadow:var(--shadow-lg);min-width:200px;text-align:center;flex-shrink:0;
+}
+.hero-big-num{
+  font-family:var(--font-display);font-weight:900;font-size:3.8rem;line-height:1;letter-spacing:-.04em;
+  background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-big-label{font-size:.78rem;color:var(--text-2);font-weight:600;margin-top:.35rem;letter-spacing:.01em;}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.stat-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1.25rem 1.5rem;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.sc-indigo::after{background:var(--grad-s)}
+.sc-coral::after{background:var(--grad-c)}
+.sc-emerald::after{background:var(--grad-r)}
+.sc-amber::after{background:linear-gradient(90deg,#F59E0B,#EA580C)}
+.stat-num{font-family:var(--font-display);font-weight:900;font-size:2rem;line-height:1;margin-bottom:.3rem;}
+.stat-num.indigo{color:var(--orange)}
+.stat-num.coral{color:var(--coral)}
+.stat-num.emerald{color:var(--emerald)}
+.stat-num.amber{color:var(--amber)}
+.stat-label{font-size:.75rem;color:var(--text-2);font-weight:600;line-height:1.4;}
+.stat-sub{font-size:.68rem;color:var(--text-3);margin-top:.2rem;}
+
+/* ── SECTION HEAD ── */
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:3.5rem;}
+.sec-head-right{text-align:right;}
+.sec-strip{height:5px;border-radius:var(--radius-pill);margin-bottom:3rem;}
+.strip-s{background:var(--grad-s)}
+.strip-c{background:var(--grad-c)}
+.strip-r{background:var(--grad-r)}
+
+/* ── INSIGHT CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin-top:2.5rem;}
+.icard{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1.5rem;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;
+}
+.icard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.icard-icon{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;}
+.ii-sky{background:var(--sky-lt)}
+.ii-coral{background:var(--coral-lt)}
+.ii-emerald{background:var(--emerald-lt)}
+.ii-amber{background:var(--amber-lt)}
+.ii-indigo{background:var(--orange-lt)}
+.icard-num{font-family:var(--font-display);font-size:1.9rem;font-weight:900;line-height:1;margin-bottom:.3rem;letter-spacing:-.03em;}
+.icard-title{font-size:.82rem;font-weight:700;margin-bottom:.3rem;color:var(--text-1);}
+.icard-desc{font-size:.77rem;color:var(--text-2);line-height:1.55;}
+
+/* ── HIGHLIGHT BLOCKS ── */
+.hblock{border-radius:var(--radius-lg);padding:1.75rem 2rem;margin:2.5rem 0;border-left:4px solid transparent;}
+.hblock-sky{background:var(--sky-lt);border-left-color:var(--sky)}
+.hblock-coral{background:var(--coral-lt);border-left-color:var(--coral)}
+.hblock-emerald{background:var(--emerald-lt);border-left-color:var(--emerald)}
+.hblock-orange{background:var(--orange-lt);border-left-color:var(--orange)}
+.hblock p{font-size:.95rem;line-height:1.75;color:var(--text-1);}
+.hblock strong{font-weight:700;}
+.hblock .acc-sky{color:var(--sky);font-weight:700}
+.hblock .acc-coral{color:var(--coral);font-weight:700}
+.hblock .acc-emerald{color:var(--emerald);font-weight:700}
+.hblock .acc-orange{color:var(--orange);font-weight:700}
+
+/* ── RED ZONE ── */
+.redzone{
+  background:linear-gradient(135deg,#FFF7ED,#FFF1E6);
+  border:1.5px solid #FED7AA;border-radius:var(--radius-xl);
+  padding:2.25rem;margin:2.5rem 0;
+  display:flex;gap:1.75rem;align-items:flex-start;
+  box-shadow:var(--shadow-sm);
+}
+.rz-badge{
+  flex-shrink:0;width:56px;height:56px;border-radius:var(--radius-md);
+  background:var(--orange-lt);border:2px solid #FED7AA;
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+}
+.rz-title{font-family:var(--font-display);font-size:1.35rem;font-weight:900;color:var(--orange);margin-bottom:.4rem;letter-spacing:-.02em;}
+.rz-body{font-size:.875rem;color:var(--text-2);line-height:1.65;}
+.rz-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem;}
+.rz-tag{background:var(--white);border:1px solid #FED7AA;color:var(--orange);font-size:.7rem;font-weight:700;padding:3px 11px;border-radius:var(--radius-pill);}
+
+/* ── TABLEAU EMBED ── */
+.viz-wrap{
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:var(--radius-xl);overflow:hidden;
+  box-shadow:var(--shadow-md);margin-top:2.5rem;
+}
+.viz-bar{
+  padding:1rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  background:var(--sand);
+}
+.viz-dots{display:flex;gap:6px;}
+.vd{width:11px;height:11px;border-radius:50%;}
+.vd-r{background:#FF5F56}.vd-y{background:#FFBD2E}.vd-g{background:#27C93F}
+.viz-title{font-size:.78rem;font-weight:600;color:var(--text-2);}
+.viz-pill{
+  background:var(--indigo);color:#fff;
+  font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 12px;border-radius:var(--radius-pill);
+}
+.viz-frame{position:relative;width:100%;padding-top:58%;background:#F5F0EB;}
+.viz-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+.viz-foot{
+  padding:.85rem 1.5rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;background:var(--sand);
+}
+.viz-foot-text{font-size:.72rem;color:var(--text-3);}
+.viz-link{
+  margin-left:auto;font-size:.72rem;font-weight:700;color:var(--indigo);
+  text-decoration:none;display:flex;align-items:center;gap:4px;
+}
+.viz-link:hover{text-decoration:underline;}
+
+/* ── GRAFIK AKTOR ── */
+.actor-section{
+  background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-xl);
+  padding:2rem 2.5rem;margin-top:2.5rem;box-shadow:var(--shadow-md);
+}
+.actor-title{font-family:var(--font-display);font-weight:700;font-size:1.4rem;letter-spacing:-.02em;margin-bottom:.4rem;}
+.actor-subtitle{font-size:.85rem;color:var(--text-2);margin-bottom:2rem;line-height:1.6;}
+.bar-group{display:flex;flex-direction:column;gap:1.1rem;}
+.bar-row{display:flex;align-items:center;gap:1rem;}
+.bar-label{font-size:.8rem;font-weight:600;color:var(--text-2);min-width:120px;flex-shrink:0;}
+.bar-track{flex:1;height:32px;background:var(--sand);border-radius:var(--radius-sm);overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:var(--radius-sm);display:flex;align-items:center;padding-left:.75rem;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+.bar-fill.buyer{background:linear-gradient(90deg,#FF6A00,#F97316);}
+.bar-fill.seller{background:linear-gradient(90deg,#EA580C,#F59E0B);}
+.bar-fill.system{background:linear-gradient(90deg,#F59E0B,#FDE68A);}
+.bar-pct{font-family:var(--font-display);font-weight:900;font-size:.9rem;color:#fff;letter-spacing:-.02em;}
+.bar-val{font-size:.75rem;font-weight:700;color:var(--text-3);min-width:40px;text-align:right;}
+.actor-insight{
+  margin-top:1.75rem;padding:1.25rem 1.5rem;
+  background:var(--orange-lt);border-radius:var(--radius-lg);border-left:4px solid var(--orange);
+}
+.actor-insight p{font-size:.88rem;color:var(--text-1);line-height:1.7;}
+.actor-insight strong{color:var(--orange);font-weight:800;}
+
+/* ── STRATEGY CARDS ── */
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;margin-top:2.5rem;}
+.scard{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius-xl);padding:2rem;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.scard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.scard-top-bar{height:4px;border-radius:var(--radius-pill);margin-bottom:1.75rem;}
+.sb-indigo{background:linear-gradient(90deg,var(--indigo),var(--violet))}
+.sb-emerald{background:linear-gradient(90deg,var(--emerald),var(--sky))}
+.sb-amber{background:linear-gradient(90deg,var(--amber),var(--orange))}
+.scard-icon{font-size:1.5rem;margin-bottom:.9rem;}
+.scard-num{
+  position:absolute;top:1.75rem;right:1.75rem;
+  font-family:var(--font-display);font-size:3.5rem;font-weight:900;
+  line-height:1;letter-spacing:-.04em;opacity:.06;color:var(--text-1);
+}
+.scard-title{font-size:1rem;font-weight:800;line-height:1.3;margin-bottom:.6rem;color:var(--text-1);}
+.scard-desc{font-size:.825rem;color:var(--text-2);line-height:1.65;margin-bottom:1.25rem;}
+.scard-target{display:flex;align-items:center;gap:.5rem;padding:.9rem 1rem;border-radius:var(--radius-md);font-size:.75rem;font-weight:700;}
+.st-indigo{background:var(--indigo-lt);color:var(--indigo)}
+.st-emerald{background:var(--emerald-lt);color:var(--emerald)}
+.st-amber{background:var(--amber-lt);color:var(--amber)}
+
+/* ── ROADMAP ── */
+.roadmap{margin-top:3rem;display:grid;gap:0;}
+.rmap-item{display:flex;gap:2rem;padding:2rem 0;border-bottom:1px solid var(--border);}
+.rmap-item:last-child{border-bottom:none;}
+.rmap-week{
+  flex-shrink:0;width:52px;height:52px;border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:900;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;
+}
+.rw-1{background:var(--indigo-lt);color:var(--indigo)}
+.rw-2{background:var(--sky-lt);color:var(--sky)}
+.rw-3{background:var(--amber-lt);color:var(--amber)}
+.rw-4{background:var(--emerald-lt);color:var(--emerald)}
+.rmap-title{font-size:.95rem;font-weight:700;margin-bottom:.35rem;color:var(--text-1);}
+.rmap-desc{font-size:.82rem;color:var(--text-2);line-height:1.6;}
+
+/* ── DATASET ── */
+.ds-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2.5rem;}
+.ds-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow-sm);}
+.ds-card-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.9rem;}
+.ds-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.ds-card-title{font-size:.85rem;font-weight:700;color:var(--text-1);}
+.ds-card-body{font-size:.78rem;color:var(--text-2);line-height:1.6;}
+.ds-card-body a{color:var(--indigo);font-weight:700;text-decoration:none;}
+.ds-card-body a:hover{text-decoration:underline;}
+code.inline{background:var(--sand);padding:2px 8px;border-radius:4px;font-size:.75rem;font-family:monospace;color:var(--text-1);}
+
+/* ── TEAM ── */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:1rem;margin-top:2.5rem;}
+.tcard{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:1.75rem 1.25rem;text-align:center;box-shadow:var(--shadow-sm);
+  transition:transform .2s,box-shadow .2s;
+}
+.tcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.tcard-av{
+  width:54px;height:54px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1rem;font-family:var(--font-display);font-weight:900;font-size:.8rem;
+  color:#fff;letter-spacing:.02em;
+}
+.av-1{background:linear-gradient(135deg,#4F46E5,#7C3AED)}
+.av-2{background:linear-gradient(135deg,#0EA5E9,#6366F1)}
+.av-3{background:linear-gradient(135deg,#F43F5E,#F59E0B)}
+.av-4{background:linear-gradient(135deg,#10B981,#0EA5E9)}
+.av-5{background:linear-gradient(135deg,#F59E0B,#EA580C)}
+.tcard-name{font-size:.85rem;font-weight:700;margin-bottom:.25rem;color:var(--text-1);}
+.tcard-role{font-size:.7rem;color:var(--text-3);font-weight:500;}
+
+/* ── SECTION WORD ── */
+.section-word{
+  font-family:var(--font-display);font-weight:900;font-style:italic;
+  font-size:clamp(5rem,15vw,12rem);line-height:.9;letter-spacing:-.05em;
+  opacity:.045;color:var(--text-1);
+  position:absolute;pointer-events:none;user-select:none;
+  right:clamp(1.25rem,5vw,4rem);top:60px;
+}
+
+/* ── BADGE ── */
+.badge{
+  display:inline-flex;align-items:center;
+  font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:var(--radius-pill);
+  vertical-align:middle;white-space:nowrap;
+}
+.b-indigo{background:var(--indigo-lt);color:var(--indigo)}
+.b-coral{background:var(--coral-lt);color:var(--coral)}
+.b-emerald{background:var(--emerald-lt);color:var(--emerald)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--text-1);color:#fff;
+  padding:2.5rem clamp(1.25rem,5vw,4rem);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-brand{
+  font-family:var(--font-display);font-weight:900;font-size:1.1rem;
+  background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.footer-sub{font-size:.75rem;color:#9CA3AF;margin-top:.2rem;}
+.footer-right{font-size:.72rem;color:#6B7280;}
+
+/* ── ANIMATIONS ── */
+.fade{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.fade.in{opacity:1;transform:none;}
+.fade-delay-1{transition-delay:.08s}
+.fade-delay-2{transition-delay:.16s}
+.fade-delay-3{transition-delay:.24s}
+.fade-delay-4{transition-delay:.32s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-top{grid-template-columns:1fr}
+  .hero-big-card{display:none}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .sec-head{grid-template-columns:1fr;gap:1rem}
+  .sec-head-right{text-align:left}
+  .section-word{display:none}
+  .redzone{flex-direction:column;gap:1rem}
+  .actor-section{padding:1.5rem}
+  .bar-label{min-width:90px}
+}
+@media(max-width:640px){
+  .nav-links,.nav-btn{display:none}
+  .hamburger{display:block}
+  .nav-links.open{
+    display:flex;flex-direction:column;
+    position:fixed;top:58px;left:0;right:0;
+    background:rgba(255,248,243,.97);backdrop-filter:blur(18px);
+    padding:1rem;border-bottom:1px solid var(--border);gap:.25rem;z-index:199;
+  }
+  .nav-links.open a{padding:10px 14px;font-size:.85rem}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .sc-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  section{padding:72px 0}
+  .bar-row{flex-wrap:wrap}
+  .bar-label{min-width:100%;margin-bottom:.25rem}
+}
+@media(max-width:400px){
+  .stat-row{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DataVis EAS</div>
+  <div class="nav-links" id="navlinks">
+    <a href="#situation">Situation</a>
+    <a href="#complication">Complication</a>
+    <a href="#resolution">Resolution</a>
+    <a href="#team">Tim</a>
+  </div>
+  <a href="#situation" class="nav-btn">Lihat Dashboard</a>
+  <button class="hamburger" id="hbg" aria-label="Menu">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section id="hero">
+  <div class="hero-blob-a"></div>
+  <div class="hero-blob-b"></div>
+
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-text">
+        <div class="hero-kicker fade"><span></span>Final Project · Data Visualisasi · Kelompok 16 Kelas Paralel B</div>
+        <h1 class="display-hero fade fade-delay-1">
+          Behind the<br>
+          <span class="line-color">Cancellation</span>
+        </h1>
+        <p class="hero-desc fade fade-delay-2">
+          Mengungkap akar pembatalan pesanan dan merancang strategi intervensi berbasis data pada e-commerce Indonesia berdasarkan analisis 9.402 transaksi Shopee periode Januari–November 2025.
+        </p>
+        <div class="hero-hook fade fade-delay-3">
+          <div class="hero-hook-fraction">1 dari 8</div>
+          <div class="hero-hook-text">transaksi berakhir dibatalkan sebelum benar-benar selesai.<br>Angka kecil di atas kertas menjadi kebocoran nyata di lapangan.</div>
+        </div>
+      </div>
+      <div class="hero-big-card fade fade-delay-3">
+        <div class="hero-big-num">9.402</div>
+        <div class="hero-big-label">Total Transaksi Diaudit</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card sc-indigo fade">
+        <div class="stat-num indigo">5.933</div>
+        <div class="stat-label">Pesanan Selesai</div>
+        <div class="stat-sub">87,2% completion rate</div>
+      </div>
+      <div class="stat-card sc-coral fade fade-delay-1">
+        <div class="stat-num coral">3.469</div>
+        <div class="stat-label">Pesanan Dibatalkan</div>
+        <div class="stat-sub">~12,8% cancellation rate</div>
+      </div>
+      <div class="stat-card sc-emerald fade fade-delay-2">
+        <div class="stat-num emerald">19</div>
+        <div class="stat-label">Variabel per Transaksi</div>
+        <div class="stat-sub">9 bulan data · 1 dataset</div>
+      </div>
+      <div class="stat-card sc-amber fade fade-delay-3">
+        <div class="stat-num amber">34+</div>
+        <div class="stat-label">Provinsi Terjangkau</div>
+        <div class="stat-sub">Distribusi seluruh Indonesia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SITUATION ══════════════ -->
+<section id="situation">
+  <div class="wrap" style="position:relative">
+    <div class="section-word">S</div>
+    <div class="sec-strip strip-s fade"></div>
+
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow"><span class="ey-pill ey-indigo"><span class="ey-dot" style="background:var(--sky)"></span>01 · Situation</span></div>
+        <h2 class="h2 fade">Pertumbuhan Transaksi<br>di Tengah Risiko Pembatalan</h2>
+      </div>
+      <div class="sec-head-right">
+        <p class="lead fade" style="margin-left:auto">Sepanjang tahun 2025, aktivitas transaksi menunjukkan tren yang terus bertumbuh. Namun pertumbuhan transaksi tidak selalu berbanding lurus dengan keberhasilan penjualan. Di balik ribuan pesanan yang masuk, masih terdapat transaksi yang gagal diselesaikan. Fenomena pembatalan ini menjadi sinyal penting karena berpotensi menghambat konversi penjualan yang seharusnya dapat menjadi pendapatan bagi bisnis.</p>
+      </div>
+    </div>
+
+    <div class="hblock hblock-sky fade">
+      <p>Pertumbuhan transaksi yang konsisten menunjukkan bahwa permintaan pasar masih sangat kuat sepanjang periode observasi. Di saat yang sama, lebih dari separuh pelanggan masih menggunakan metode pembayaran yang sama secara dominan, menandakan adanya pola perilaku transaksi yang relatif stabil. Namun ketika dilihat lebih jauh, <strong>risiko pembatalan </strong>tidak tersebar merata di seluruh wilayah. Beberapa provinsi menunjukkan tingkat pembatalan yang lebih tinggi dibandingkan wilayah lainnya. Temuan ini menjadi petunjuk awal bahwa terdapat faktor-faktor tertentu yang memengaruhi keberhasilan transaksi dan perlu dianalisis lebih mendalam pada tahap berikutnya.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="icard fade">
+        <div class="icard-icon ii-sky">📦</div>
+        <div class="icard-num" style="color:var(--sky)">9.402</div>
+        <div class="icard-title">Total Transaksi Diaudit</div>
+        <div class="icard-desc">Satu dataset terpadu, RangeIndex 0–20.847. Seluruh baris valid tanpa duplikasi order_id.</div>
+      </div>
+      <div class="icard fade fade-delay-1">
+        <div class="icard-icon ii-emerald">✅</div>
+        <div class="icard-num" style="color:var(--emerald)">5.933</div>
+        <div class="icard-title">Pesanan Berhasil Selesai</div>
+        <div class="icard-desc">86,4% dari total transaksi menjadi basis revenue aktual yang dapat dihitung oleh bisnis.</div>
+      </div>
+      <div class="icard fade fade-delay-2">
+        <div class="icard-icon ii-amber">⚠️</div>
+        <div class="icard-num" style="color:var(--amber)">1 dari 8</div>
+        <div class="icard-title">Pesanan Dibatalkan</div>
+        <div class="icard-desc">Sebanyak 12,8% transaksi tidak berhasil diselesaikan, menunjukkan adanya kebocoran yang berpotensi mengurangi pendapatan bisnis.</div>
+      </div>
+      <div class="icard fade fade-delay-3">
+        <div class="icard-icon ii-indigo">🗺️</div>
+        <div class="icard-num" style="color:var(--indigo)">34+</div>
+        <div class="icard-title">Provinsi Terjangkau</div>
+        <div class="icard-desc">Data mencakup seluruh wilayah Indonesia, mencerminkan distribusi nasional yang luas dan beragam.</div>
+      </div>
+    </div>
+
+    <!-- Dashboard 1 -->
+    <div class="viz-wrap fade" id="dashboard1">
+      <div class="viz-bar">
+        <div class="viz-dots"><div class="vd vd-r"></div><div class="vd vd-y"></div><div class="vd vd-g"></div></div>
+        <span class="viz-title">Dashboard 1 — Shopee Order Fulfillment &amp; Cancellation Overview</span>
+        <span class="viz-pill">Live Viz</span>
+      </div>
+      <div class="viz-frame">
+        <iframe
+          src="https://public.tableau.com/views/FinalProject1ShopeeOrderFulfillmentCancellationOverview/Dashboard1?:embed=y&:display_count=no&:showVizHome=no&:toolbar=no"
+          allowfullscreen
+          title="Dashboard 1 — Order Fulfillment Overview">
+        </iframe>
+      </div>
+      <div class="viz-foot">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;color:var(--text-3)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        <span class="viz-foot-text">Klik elemen chart untuk filter interaktif. Embed langsung dari Tableau Public.</span>
+        <a href="https://public.tableau.com/app/profile/afiana.nurani/viz/FinalProject1ShopeeOrderFulfillmentCancellationOverview/Dashboard1" target="_blank" class="viz-link">Buka penuh di Tableau ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ COMPLICATION ══════════════ -->
+<section id="complication" style="background:var(--white)">
+  <div class="wrap" style="position:relative">
+    <div class="section-word">C</div>
+    <div class="sec-strip strip-c fade"></div>
+
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow"><span class="ey-pill ey-coral"><span class="ey-dot" style="background:var(--coral)"></span>02 · Complication</span></div>
+        <h2 class="h2 fade">Pembatalan Tidak<br>Terjadi Secara Acak</h2>
+      </div>
+      <div class="sec-head-right">
+        <p class="lead fade" style="margin-left:auto">Di balik angka transaksi yang besar, tersembunyi pola pembatalan yang memiliki arah dan konsentrasi tertentu — bukan tersebar merata, melainkan terkonsentrasi pada wilayah, aktor, dan alasan yang bisa dipetakan.</p>
+      </div>
+    </div>
+
+    <div class="hblock hblock-coral fade">
+      <p>Dari <strong class="acc-coral">3.469 pesanan yang dibatalkan</strong>, pembatalan tidak terdistribusi secara acak ke seluruh wilayah. Ada zona-zona tertentu yang memperlihatkan tingkat pembatalan jauh di atas rata-rata — dan zona inilah yang perlu menjadi prioritas intervensi bisnis. Menemukan zona itu adalah langkah pertama sebelum membedah siapa dan mengapa.</p>
+    </div>
+
+    <!-- Dashboard 2 -->
+    <div class="viz-wrap fade" id="dashboard2">
+      <div class="viz-bar">
+        <div class="viz-dots"><div class="vd vd-r"></div><div class="vd vd-y"></div><div class="vd vd-g"></div></div>
+        <span class="viz-title">Dashboard 2 — High-Risk Cancellation Zones</span>
+        <span class="viz-pill">Live Viz</span>
+      </div>
+      <div class="viz-frame">
+        <iframe
+          src="https://public.tableau.com/views/FinalProject2High-RiskCancellationZones/Dashboard2?:embed=y&:display_count=no&:showVizHome=no&:toolbar=no"
+          allowfullscreen
+          title="Dashboard 2 — High-Risk Cancellation Zones">
+        </iframe>
+      </div>
+      <div class="viz-foot">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;color:var(--text-3)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        <span class="viz-foot-text">Perhatikan konsentrasi wilayah berisiko tinggi — bukan volume pesanan, melainkan tingkat pembatalannya.</span>
+        <a href="https://public.tableau.com/app/profile/afiana.nurani/viz/FinalProject2High-RiskCancellationZones/Dashboard2" target="_blank" class="viz-link">Buka penuh di Tableau ↗</a>
+      </div>
+    </div>
+
+    <!-- Grafik Aktor Pembatal Utama -->
+    <div class="actor-section fade" id="aktor">
+      <div class="actor-title">Aktor Pembatal Utama</div>
+      <div class="actor-subtitle">Siapa yang paling banyak memutuskan untuk membatalkan pesanan? Grafik ini menjawab pertanyaan yang sering diabaikan: bukan apa alasannya, tapi siapa yang melakukan.</div>
+      <div class="bar-group" id="barGroup">
+        <div class="bar-row">
+          <div class="bar-label">Pembeli</div>
+          <div class="bar-track">
+            <div class="bar-fill buyer" data-width="65.1" style="width:0%">
+              <span class="bar-pct">65,1%</span>
+            </div>
+          </div>
+          <div class="bar-val">65,1%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Penjual</div>
+          <div class="bar-track">
+            <div class="bar-fill seller" data-width="33.8" style="width:0%">
+              <span class="bar-pct">33,8%</span>
+            </div>
+          </div>
+          <div class="bar-val">33,8%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Sistem/Platform</div>
+          <div class="bar-track">
+            <div class="bar-fill system" data-width="1.1" style="width:0%">
+              <span class="bar-pct">1,1%</span>
+            </div>
+          </div>
+          <div class="bar-val">1,1%</div>
+        </div>
+      </div>
+      <div class="actor-insight">
+        <p>Grafik ini memperlihatkan bahwa <strong>pembeli adalah aktor dominan dalam pembatalan pesanan</strong> — jauh melampaui penjual maupun sistem. Temuan ini mengubah cara kita membaca masalah: pembatalan lebih tepat dipahami sebagai <strong>keputusan pelanggan</strong> ketimbang kegagalan teknis atau operasional.</p>
+      </div>
+    </div>
+
+    <!-- Dashboard 3 -->
+    <div style="margin-top:3rem" class="fade">
+      <div class="eyebrow"><span class="ey-pill ey-coral"><span class="ey-dot" style="background:var(--coral)"></span>Akar Masalah</span></div>
+      <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.3rem,2.5vw,2rem);letter-spacing:-.025em;margin-bottom:.75rem;">Mengapa Pembeli Membatalkan?</h3>
+      <p style="font-size:.95rem;color:var(--text-2);line-height:1.75;max-width:640px;margin-bottom:2rem;">Setelah tahu siapa, pertanyaan berikutnya adalah mengapa. Ketika alasan pembatalan dibedah berdasarkan aktor, pola yang muncul menunjuk ke satu arah yang konsisten: bukan gangguan sistem, melainkan perubahan keputusan yang terjadi setelah transaksi dibuat.</p>
+    </div>
+
+    <div class="redzone fade">
+      <div class="rz-badge">⚡</div>
+      <div>
+        <div class="rz-title">Impulsive Buying — Akar yang Sesungguhnya</div>
+        <div class="rz-body">
+          Alasan pembatalan terbesar berasal dari pembeli yang <strong>berubah pikiran</strong> atau ingin <strong>mengubah pesanan yang sudah dibuat</strong>. Ini bukan tanda kegagalan sistem pengiriman, bukan pula ketidakpuasan terhadap produk. Ini adalah gejala klasik dari perilaku belanja impulsif: keputusan dibuat cepat, komitmen mudah goyah. Artinya, akar masalah ada di titik antara klik checkout dan momen penyesalan yang menyusul sesaat setelahnya.
+        </div>
+        <div class="rz-tags">
+          <span class="rz-tag">⚠ Berubah Pikiran</span>
+          <span class="rz-tag">⚠ Ubah Pesanan yang Ada</span>
+          <span class="rz-tag">65,1% oleh Pembeli</span>
+          <span class="rz-tag">3.469 total pembatalan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="viz-wrap fade" id="dashboard3">
+      <div class="viz-bar">
+        <div class="viz-dots"><div class="vd vd-r"></div><div class="vd vd-y"></div><div class="vd vd-g"></div></div>
+        <span class="viz-title">Dashboard 3 — Root Cause Breakdown by Actor</span>
+        <span class="viz-pill">Live Viz</span>
+      </div>
+      <div class="viz-frame">
+        <iframe
+          src="https://public.tableau.com/views/FinalProject3RootCauseBreakdownbyActor/Dashboard3?:embed=y&:display_count=no&:showVizHome=no&:toolbar=no"
+          allowfullscreen
+          title="Dashboard 3 — Root Cause Breakdown by Actor">
+        </iframe>
+      </div>
+      <div class="viz-foot">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;color:var(--text-3)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        <span class="viz-foot-text">Filter berdasarkan aktor untuk melihat distribusi alasan pembatalan secara spesifik per kelompok.</span>
+        <a href="https://public.tableau.com/app/profile/afiana.nurani/viz/FinalProject3RootCauseBreakdownbyActor/Dashboard3" target="_blank" class="viz-link">Buka penuh di Tableau ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ RESOLUTION ══════════════ -->
+<section id="resolution">
+  <div class="wrap" style="position:relative">
+    <div class="section-word">R</div>
+    <div class="sec-strip strip-r fade"></div>
+
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow"><span class="ey-pill ey-emerald"><span class="ey-dot" style="background:var(--emerald)"></span>03 · Resolution</span></div>
+        <h2 class="h2 fade">Strategi Intervensi<br>yang Lebih Terarah</h2>
+      </div>
+      <div class="sec-head-right">
+        <p class="lead fade" style="margin-left:auto">Solusinya bukan menghapus metode pembayaran atau membanjiri promosi umum. Yang lebih efektif adalah memperkuat komitmen pembeli di titik-titik yang sudah teridentifikasi sebagai rawan — berbasis data, bukan asumsi.</p>
+      </div>
+    </div>
+
+    <div class="hblock hblock-emerald fade">
+      <p>Alih-alih merespons pembatalan setelah terjadi, intervensi yang lebih cerdas menargetkan <strong class="acc-emerald">zona risiko, perilaku pembeli, dan momen kritis sebelum pembatalan benar-benar dilakukan</strong>. Tiga strategi berikut dirancang berdasarkan temuan dari keempat dashboard — bukan perkiraan, melainkan respons langsung terhadap pola yang sudah terlihat di data.</p>
+    </div>
+
+    <div class="sc-grid">
+      <div class="scard fade">
+        <div class="scard-top-bar sb-indigo"></div>
+        <div class="scard-num">01</div>
+        <div class="scard-icon">🔒</div>
+        <div class="scard-title">Perkuat Komitmen Pembeli Sejak Awal</div>
+        <div class="scard-desc">Karena pembatalan paling banyak dipicu oleh perubahan pikiran setelah checkout, intervensi paling efektif adalah mempersulit mundur sebelum pesanan diproses: konfirmasi ulang pesanan, batas waktu pembatalan yang lebih ketat, dan notifikasi yang membangun rasa urgensi positif untuk melanjutkan transaksi.</div>
+        <div class="scard-target st-indigo">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          Target: ↓ pembatalan dari segmen impulsif buyer
+        </div>
+      </div>
+
+      <div class="scard fade fade-delay-1">
+        <div class="scard-top-bar sb-emerald"></div>
+        <div class="scard-num">02</div>
+        <div class="scard-icon">📍</div>
+        <div class="scard-title">Fokus Intervensi ke Zona Risiko Tinggi</div>
+        <div class="scard-desc">Dashboard 2 mengidentifikasi wilayah dengan tingkat pembatalan di atas rata-rata. Alihkan fokus subsidi ongkir, monitoring, dan promosi bertarget ke wilayah-wilayah ini terlebih dahulu. Intervensi yang menyebar ke seluruh wilayah secara seragam justru akan boros dan kurang berdampak.</div>
+        <div class="scard-target st-emerald">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          Target: Efisiensi anggaran promosi berbasis zona
+        </div>
+      </div>
+
+      <div class="scard fade fade-delay-2">
+        <div class="scard-top-bar sb-amber"></div>
+        <div class="scard-num">03</div>
+        <div class="scard-icon">💡</div>
+        <div class="scard-title">Migrasi Bertahap dari COD ke Digital</div>
+        <div class="scard-desc">Metode COD memberikan kebebasan yang justru memperlemah komitmen transaksi. Kampanye insentif bertahap — cashback, diskon eksklusif, atau poin loyalitas — untuk mendorong migrasi ke ShopeePay atau metode digital lain akan secara struktural mengurangi angka pembatalan dari akarnya.</div>
+        <div class="scard-target st-amber">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          Target: ↑ konversi COD → digital payment secara bertahap
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Solusi -->
+    <div style="margin-top:4rem" class="fade">
+      <div class="eyebrow"><span class="ey-pill ey-emerald">Dashboard Solusi</span></div>
+      <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.3rem,2.5vw,2rem);letter-spacing:-.025em;margin-bottom:.75rem;">Targeted Intervention Zone</h3>
+      <p style="font-size:.95rem;color:var(--text-2);line-height:1.75;max-width:640px;margin-bottom:2rem;">Dashboard ini memusatkan perhatian pada wilayah dan segmen yang paling berisiko. Dengan peta intervensi yang lebih tajam, sumber daya bisnis dapat diarahkan ke area yang paling mungkin memberi dampak nyata terhadap penurunan cancellation rate — bukan ke seluruh area secara merata.</p>
+    </div>
+
+    <div class="viz-wrap fade" id="dashboard-solusi">
+      <div class="viz-bar">
+        <div class="viz-dots"><div class="vd vd-r"></div><div class="vd vd-y"></div><div class="vd vd-g"></div></div>
+        <span class="viz-title">Dashboard 4 — Targeted Intervention Zone / Focus Area</span>
+        <span class="viz-pill">Live Viz</span>
+      </div>
+      <div class="viz-frame">
+        <iframe
+          src="https://public.tableau.com/views/FinalProject4TargetedInterventionZone/FocusArea?:embed=y&:display_count=no&:showVizHome=no&:toolbar=no"
+          allowfullscreen
+          title="Dashboard Solusi — Targeted Intervention Zone">
+        </iframe>
+      </div>
+      <div class="viz-foot">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;color:var(--text-3)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        <span class="viz-foot-text">Gunakan filter wilayah untuk mempersempit zona intervensi prioritas.</span>
+        <a href="https://public.tableau.com/app/profile/afiana.nurani/viz/FinalProject4TargetedInterventionZone/FocusArea" target="_blank" class="viz-link">Buka penuh di Tableau ↗</a>
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div style="margin-top:4.5rem" class="fade">
+      <div class="eyebrow"><span class="ey-pill ey-emerald">Roadmap Implementasi</span></div>
+      <div class="roadmap">
+        <div class="rmap-item fade">
+          <div class="rmap-week rw-1">W1</div>
+          <div>
+            <div class="rmap-title">Pemetaan Zona &amp; Segmen Prioritas</div>
+            <div class="rmap-desc">Identifikasi wilayah dan segmen pembeli dengan risiko pembatalan tertinggi berdasarkan data. Tentukan batas intervensi awal dan susun SOP respons cepat untuk pesanan yang masuk zona merah.</div>
+          </div>
+        </div>
+        <div class="rmap-item fade fade-delay-1">
+          <div class="rmap-week rw-2">W2</div>
+          <div>
+            <div class="rmap-title">Deploy Mekanisme Konfirmasi &amp; Notifikasi</div>
+            <div class="rmap-desc">Aktifkan konfirmasi ulang pesanan dan notifikasi bertahap untuk pembeli di segmen impulsif. Konfigurasi alert otomatis berbasis pola waktu pembatalan yang terdeteksi dari dataset.</div>
+          </div>
+        </div>
+        <div class="rmap-item fade fade-delay-2">
+          <div class="rmap-week rw-3">W3</div>
+          <div>
+            <div class="rmap-title">Pilot Kampanye Migrasi Pembayaran Digital</div>
+            <div class="rmap-desc">Uji coba insentif migrasi COD ke digital di 3 wilayah dengan COD-rate dan cancellation rate tertinggi. Ukur perubahan proporsi metode pembayaran dan angka pembatalan dalam 7 hari pertama.</div>
+          </div>
+        </div>
+        <div class="rmap-item fade fade-delay-3">
+          <div class="rmap-week rw-4">W4</div>
+          <div>
+            <div class="rmap-title">Evaluasi &amp; Iterasi Berbasis Data</div>
+            <div class="rmap-desc">Bandingkan cancellation rate sebelum dan sesudah intervensi. Lakukan analisis segmen kontrol vs. treatment. Dokumentasikan temuan untuk menyempurnakan siklus intervensi berikutnya secara berkelanjutan.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ DATASET ══════════════ -->
+<section id="dataset" style="background:var(--sand);padding:72px 0">
+  <div class="wrap">
+    <div class="eyebrow fade"><span class="ey-pill ey-indigo">Transparansi Data</span></div>
+    <h2 class="h2 fade" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:2rem">Sumber &amp; Referensi Dataset</h2>
+    <div class="ds-grid">
+      <div class="ds-card fade">
+        <div class="ds-card-head">
+          <div class="ds-icon ii-indigo">🗂️</div>
+          <div class="ds-card-title">Sumber Dataset</div>
+        </div>
+        <div class="ds-card-body">
+          <strong>Indonesia E-Commerce Sales &amp; Shipping 2023–2025</strong> oleh Bakitacos di Kaggle. Dataset publik berisi data transaksi Shopee Indonesia lintas tahun.<br><br>
+          <a href="https://www.kaggle.com/datasets/bakitacos/indonesia-e-commerce-sales-and-shipping-20232025" target="_blank">Lihat di Kaggle ↗</a>
+        </div>
+      </div>
+      <div class="ds-card fade fade-delay-1">
+        <div class="ds-card-head">
+          <div class="ds-icon ii-amber">📊</div>
+          <div class="ds-card-title">Visualisasi Tableau</div>
+        </div>
+        <div class="ds-card-body">
+          Keempat dashboard interaktif dibuat di Tableau Public oleh Afiana Nurani. Embed langsung tanpa modifikasi data apapun dari sumber aslinya.<br><br>
+          <a href="https://public.tableau.com/app/profile/afiana.nurani" target="_blank">Buka Profil Tableau ↗</a>
+        </div>
+      </div>
+      <div class="ds-card fade fade-delay-2">
+        <div class="ds-card-head">
+          <div class="ds-icon ii-emerald">📁</div>
+          <div class="ds-card-title">File yang Dianalisis</div>
+        </div>
+        <div class="ds-card-body">
+          <code class="inline">all_months_clean (1).xlsx</code><br><br>
+          1 sheet · 9.402 baris · 19 kolom<br>
+          Tipe: datetime, int64 (×9), object (×9)<br>
+          Memory: ~3.0 MB
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TEAM ══════════════ -->
+<section id="team">
+  <div class="wrap">
+    <div class="eyebrow fade"><span class="ey-pill ey-indigo">Tim Peneliti</span></div>
+    <h2 class="h2 fade">Kelompok 16 — Kelas Paralel B</h2>
+    <p class="lead fade">Mata Kuliah Data Visualisasi · Sistem Informasi · UPN Veteran Jawa Timur · 2026</p>
+    <div class="team-grid">
+      <div class="tcard fade">
+        <div class="tcard-av av-1">01</div>
+        <div class="tcard-name">Afiana Nurani</div>
+        <div class="tcard-role">23082010162</div>
+      </div>
+      <div class="tcard fade fade-delay-1">
+        <div class="tcard-av av-2">02</div>
+        <div class="tcard-name">Haura Taqiya Azza Nabila</div>
+        <div class="tcard-role">23082010165</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Behind the Cancellation</div>
+    <div class="footer-sub">Kelompok 16 · Data Visualisasi · Sistem Informasi · UPN Veteran Jawa Timur · 2026</div>
+  </div>
+  <div class="footer-right">Dataset: Kaggle · Viz: Tableau Public · SCR Framework</div>
+</footer>
+
+<script>
+// Progress bar
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, { passive: true });
+
+// Intersection observer for fade
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+// Bar chart animation on scroll
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(bar => {
+        const w = bar.getAttribute('data-width');
+        setTimeout(() => { bar.style.width = w + '%'; }, 200);
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const barGroup = document.querySelector('.actor-section');
+if (barGroup) barObs.observe(barGroup);
+
+// Nav active
+const sections = document.querySelectorAll('section[id]');
+const navAs = document.querySelectorAll('.nav-links a');
+sections.forEach(s => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { threshold: 0.4 }).observe(s);
+});
+
+// Hamburger
+const hbg = document.getElementById('hbg');
+const nl = document.getElementById('navlinks');
+hbg.addEventListener('click', () => nl.classList.toggle('open'));
+nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nl.classList.remove('open')));
+</script>
+</body>
+</html>
